@@ -1,0 +1,29 @@
+
+<!-- 🧠 COMPUTED PROPERTY -->
+<!-- 
+1. Apa Itu?
+   - Computed adalah data "TURUNAN". Bayangkan rumus Excel. Sel C = A + B.
+   - Kalau A atau B berubah, C otomatis berubah.
+
+2. Kenapa Gak Pakai Method Biasa?
+   - Caching (Hemat Performa).
+   - Computed hanya dihitung ulang kalau data sumbernya (dependencies) berubah.
+   - Kalau data tidak berubah, dia pakai hasil hitungan terakhir.
+   - Method akan dijalankan ulang SETIAP KALI ada update di layar, biarpun data gak berubah.
+
+3. Kapan Harus Pakai?
+   a. Validasi Form (Seperti tombol Simpan di atas):
+      - Cek username, email, password sudah diisi belum?
+   
+   b. Filter Pencarian:
+      - Punya list 1000 barang, user ketik "baju". 
+      - Computed akan return array baru isinya cuma barang yang ada kata "baju".
+   
+   c. Total Keranjang Belanja:
+      - Total = (Harga * Jumlah) - Diskon. 
+      - Kalau user tambah jumlah barang, total otomatis berubah.
+
+4. Rumus Dasar "Clean Code":
+   - Gunakan COMPUTED untuk "MENGOLAH" data yang sudah ada (memfilter, menjumlah, memformat).
+   - Gunakan METHODS untuk "AKSI" (klik tombol, simpan data ke server).
+-->
