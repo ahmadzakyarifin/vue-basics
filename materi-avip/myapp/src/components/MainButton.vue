@@ -28,7 +28,10 @@
         title : {
             type : String,
         },
-        disabled : Boolean,
+        disabled : {
+            type : Boolean,
+            default : false
+        },
         total : Number,
         user : Object,
         menus : Array,
@@ -39,53 +42,49 @@
 </script>
 
 <template>
-    <!-- <button>Button</button> -->
-
-    <!-- <h1>{{ namanya }}</h1> -->
-    <!-- <button @click="showname">Show Name</button> -->
-
-    <!-- 06 disable -->
-    <!-- <button :disabled="disableButton" :class="styleDisableButton">Button Disable</button> -->
-    <!-- <button v-bind="object">Button Disable</button> -->
-
-    <!--  07 javascript expression -->
-    <!-- <button :id="`ini id ke ${object.id}`" :disabled="isLoading" >{{ isLoading ? "masih loding" : "submit" }}</button> -->
-
-    <!-- 08 directive -->
-    <!-- <div>
-        <a :href="url">
-            <h1>haii</h1>
-        </a>
-    </div> -->
-
-    <!-- 09 Dynamic argument -->
-    <!-- <div>
-        <a :[dynamic.attr]="dynamic.url">
-            <h1>hallo</h1>
-        </a>
-    </div> -->
-
-
-    <!-- 10 props dan condisional rendering -->
-    <p v-if="props.total">Total barang : {{ props.total }} </p>
-    <p v-if="props.user && props.user.nama">Nama : {{ props.user.nama }}</p>
-    <p v-if="props.user && props.user.role">Role : {{ props.user.role }}</p>
-    <!-- <ul v-if="props.menus">
-        <li v-for="menu in props.menus" key="menu">{{ menu }}</li>
-    </ul> -->
-    <ul v-if="props.menus">
-        <li v-for="menu in props.menus" key="menu.id">
-            {{ menu.nama }} - Rp{{ menu.price }}
-        </li>
-    </ul>
-    <button v-if="props.title" :disabled="props.disabled" @click="props.onClick">{{ props.title }}</button>
-
-
+    <div class="wrapper">
+        <!-- <button>Button</button> -->
+    
+        <!-- <h1>{{ namanya }}</h1> -->
+        <!-- <button @click="showname">Show Name</button> -->
+    
+        <!-- ... (commented out code remains) ... -->
+    
+        <!-- 10 props dan condisional rendering -->
+        <p v-if="props.total">Total barang : {{ props.total }} </p>
+        <p v-if="props.user && props.user.nama">Nama : {{ props.user.nama }}</p>
+        <p v-if="props.user && props.user.role">Role : {{ props.user.role }}</p>
+        
+        <ul v-if="props.menus">
+            <li v-for="menu in props.menus" key="menu.id">
+                {{ menu.nama }} - Rp{{ menu.price }}
+            </li>
+        </ul>
+        
+        <!--14 class dan style binding -->
+        <button v-if="props.title" :class="{'button': props.title == 'test', 'disabled' : disabled}"  :disabled="props.disabled" @click="props.onClick">{{ props.title }}</button>
+    </div>
 </template>
 
 <!-- scoped artinya style css hanya berlaku di component ini saja -->
 <style scoped>
+.button{
+    margin-top: 20px;
+    background-color: green;
+    border: none;
+    color: white;
+    padding: 8px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
 
+.disabled {
+    background-color: gray;
+    cursor: not-allowed;
+}
+
+
+    
 </style>
 
 <!-- 🧠 RINGKASAN
@@ -221,3 +220,43 @@ Diakses lewat .value-->
    - display: block  → Elemen MUNCUL/TAMPIL
    - Kita harus manual bolak-balik ubah value itu setiap kali klik
 -->
+
+
+<!-- BEDANYA CLASS vs STYLE BINDING (PENJELASAN MENDALAM)
+
+<!-- 1. CLASS BINDING (:class)
+
+   Kapan dipakai?
+      - Kalau design-nya sudah PATEN (tetap).
+      - Misal: status 'sukses', 'gagal', 'aktif', 'loading'.
+   
+   Analogi:
+      - Memilih baju dari lemari. Bajunya sudah dijahit (di file CSS).
+      - Kita cuma bilang: "Hari ini pakai baju merah".
+   
+   Contoh Code:
+      <div :class="{ 'alert-danger': isError }"></div>
+      
+      Artinya:
+      - Jika isError = true  -> class="alert-danger" (Merah)
+      - Jika isError = false -> class="" (Kosong/Normal)
+
+
+2. STYLE BINDING (:style)
+
+   Kapan dipakai?
+      - Kalau design-nya DINAMIS (berubah-ubah terus).
+      - Misal: progress bar (0-100%), posisi mouse (X,Y), warna custom dari user.
+   
+   Analogi:
+      - Melukis langsung di kulit.
+      - Kita buat warnanya saat itu juga.
+   
+   Contoh Code:
+      <div :style="{ width: progress + '%', color: userColor }"></div>
+      
+      Artinya:
+      - Width bisa 10%, 55%, 99% (sesuai variable progress)
+      - Warna bisa merah, biru, #F4F4F4 (sesuai variable userColor)
+
+ -->

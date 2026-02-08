@@ -160,6 +160,14 @@ const manusia = reactive({
   ]
 })
 
+// 14 class dan style binding
+const pencet = ref(false)
+
+
+const silahkanPencet = () => {
+  pencet.value  = !pencet.value
+}
+
 </script>
 
 <template>
@@ -187,7 +195,7 @@ const manusia = reactive({
   <!-- 10 Props -->
   <MainButton :title="'submit'"/>
   <MainButton :title="'login'"/>
-  <MainButton :title="'logout'" :disabled/>
+  <MainButton :title="'logout'" disabled/>
   <MainButton  :total="5"/>
   <MainButton :user="{nama:'admin',role:'admin'}"/>
   <!-- <MainButton :menus="['ayam','sapi','unta']"/> -->
@@ -335,7 +343,9 @@ const manusia = reactive({
       </ul>
     </div>
 
+    <!--14 class dan style binding -->
 
+    <MainButton :onClick="silahkanPencet" :title="'test'" :disabled="pencet"/>
 
 
 </template>
