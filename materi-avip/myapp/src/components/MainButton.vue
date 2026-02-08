@@ -27,13 +27,11 @@
     const props = defineProps({
         title : {
             type : String,
-            default : "ini default"
         },
         disabled : Boolean,
         total : Number,
         user : Object,
         menus : Array,
-        title : String,
         onClick : Function
     })
 

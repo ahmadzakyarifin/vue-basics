@@ -120,6 +120,46 @@ function simpanHasil(){
   alert("Data berhasil di simpan")
 }
 
+// 13. list rendering
+const manusia = reactive({
+  nama : 'zaky',
+  umur : 25,
+  books : [
+    {
+      id: 1,
+      title : 'Novel Bumi',
+      karya : 'tereliye',
+      rating: 4.8,
+      reviews: [
+        { user: 'Ahmad', comment: 'Sangat bagus!', rating: 5 },
+        { user: 'Budi', comment: 'Menarik sekali', rating: 4 },
+        { user: 'Siti', comment: 'Recommended!', rating: 5 }
+      ]
+    },
+    {
+      id: 2,
+      title : 'Novel Bulan',
+      karya : 'tereliye',
+      rating: 4.9,
+      reviews: [
+        { user: 'Dewi', comment: 'Ceritanya keren', rating: 5 },
+        { user: 'Andi', comment: 'Bikin nangis', rating: 4 }
+      ]
+    },    
+    {
+      id: 3,
+      title : 'Novel Matahari',
+      karya : 'tereliye',
+      rating: 4.7,
+      reviews: [
+        { user: 'Rini', comment: 'Ending nya epic!', rating: 5 },
+        { user: 'Joko', comment: 'Seru banget', rating: 5 },
+        { user: 'Lina', comment: 'Worth it', rating: 4 }
+      ]
+    },
+  ]
+})
+
 </script>
 
 <template>
@@ -235,6 +275,67 @@ function simpanHasil(){
             <p>ini v-show</p>
         </div>
     </div>
+
+
+    <!-- 13. list rendering -->
+    <h2 style="margin-top: 50px;">V-FOR EXAMPLES</h2>
+    
+    <!-- Contoh 1: Loop Array of Objects -->
+    <div >
+      <h3>1. Loop Array of Objects</h3>
+      <ul>
+        <li v-for="book in manusia.books" :key="book.id">
+          {{ book.title }} oleh {{ book.karya }}
+        </li>
+      </ul>
+    </div>
+
+    <!-- Contoh 2: Loop dengan Index -->
+    <div >
+      <h3>2. Loop dengan Index</h3>
+      <ul>
+        <li v-for="(book, index) in manusia.books" :key="book.id">
+          Buku ke-{{ index + 1 }}: {{ book.title }}
+        </li>
+      </ul>
+    </div>
+
+    <!-- Contoh 3: Nested Loop -->
+    <div >
+      <h3>3. Nested Loop (Loop di dalam Loop)</h3>
+      <div v-for="book in manusia.books" :key="book.id" style="margin-bottom: 15px;">
+        <strong>{{ book.title }}</strong>
+        <ul>
+          <li v-for="(review, idx) in book.reviews" :key="idx">
+            {{ review.user }}: {{ review.comment }}
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Contoh 4: Loop dengan Range -->
+    <div >
+      <h3>4. Loop dengan Range (1-10)</h3>
+      <p>
+        <!-- <span v-for="n of 10" :key="n" style="margin-right: 10px; font-weight: bold;"> -->
+        <span v-for="n in 10" :key="n" style="margin-right: 10px; font-weight: bold;">
+          {{ n }}
+        </span>
+      </p>
+    </div>
+
+    <!-- Contoh 5: Loop dengan v-if -->
+    <div>
+      <h3>5. Loop dengan Kondisi (v-if)</h3>
+      <p>Buku dengan rating tinggi (>= 4.8):</p>
+      <ul>
+        <li v-for="book in manusia.books" :key="book.id">
+          <span v-if="book.rating >= 4.8">{{ book.title }} - Rating: {{ book.rating }}</span>
+        </li>
+      </ul>
+    </div>
+
+
 
 
 </template>
