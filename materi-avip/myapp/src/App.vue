@@ -1,6 +1,8 @@
 <script setup>
-import { reactive, ref, computed } from 'vue';
+import { reactive, ref, computed, provide } from 'vue';
 import MainButton from './components/MainButton.vue';
+import CardLayout from './components/CardLayout.vue';
+import GrandChild from './components/GrandChild.vue';
 
 // const nama = 'Ida Laila'
 
@@ -167,6 +169,57 @@ const pencet = ref(false)
 const silahkanPencet = () => {
   pencet.value  = !pencet.value
 }
+
+// =============== active dan nonactive ========
+const isActive = ref(true)
+
+function toggleStatus(){
+  isActive.value = !isActive.value
+}
+const statusText = computed(()=>{
+  return isActive.value ? 'Active' : 'Nonactive'
+})
+
+const buttonText = computed(()=>{
+  return isActive.value ? 'Nonactive' : 'Active'
+})
+
+// === LOGIC UNTUK STUDI KASUS TOGGLE ===
+const statusUser = ref(false) // Default false (biasanya user baru non-aktif atau props default false)
+
+function gantiStatusUser() {
+  // Logic toggle: membalikkan nilai true jadi false, false jadi true
+  statusUser.value = !statusUser.value
+  console.log("Status user sekarang:", statusUser.value)
+}
+
+// === 16 V-MODEL MODIFIERS & VALUE BINDING ===
+const pendaftaran = reactive({
+  // .trim
+  nama: '',     
+  // .number   
+  umur: null, 
+  // .lazy     
+  deskripsi: '',
+  // value binding (radio)   
+  paket: '', 
+  syarat: false    // checkbox bool
+})
+
+// === 18 PROVIDE & INJECT ===
+const themeApp = ref('light') 
+provide('themeApp', themeApp) 
+
+function ubahTheme(){
+  themeApp.value = themeApp.value == 'light' ? 'dark' : 'light'
+}
+
+provide('userLogin', 'Zaky Arifin') 
+
+function kirimPesan() {
+  alert('Halo! Ini function dari App.vue yang dipanggil via Inject!')
+}
+provide('kirimPesan', kirimPesan) 
 
 </script>
 
@@ -347,7 +400,133 @@ const silahkanPencet = () => {
 
     <MainButton :onClick="silahkanPencet" :title="'test'" :disabled="pencet"/>
 
+    <!-- ===== staus active dan nonactive -->
+    <div style="margin-top: 50px;">
+      <p>Status: <strong>{{ statusText }}</strong></p>
+      <MainButton :title="buttonText" :active="isActive" @click="toggleStatus"/>
+    </div>
 
+    <!-- 15. STUDI KASUS: TOGGLE & ATTRIBUTES INHERITANCE -->
+    <div style="margin-top: 50px; border-top: 2px dashed black; padding-top: 20px;">
+      
+      <p>Status User: <strong>{{ statusUser ? 'AKTIF' : 'NON-AKTIF' }}</strong></p>
+      
+      <!-- 
+        CONTOH INHERIT ATTRS:
+        Kita kirim class="custom-margin" dan id="btn-spesial".
+        Karena di MainButton sudah di set inheritAttrs: false dan v-bind="$attrs" di button,
+        maka class dan id ini akan nempel di BUTTON nya, bukan di DIV pembungkusnya.
+      -->
+      <MainButton 
+        :title="statusUser ? 'Non-aktifkan User' : 'Aktifkan User'" 
+        :active="statusUser" 
+        @click="gantiStatusUser"
+        class="custom-shadow"
+        id="btn-user-toggle"
+      />
+
+      <p style="font-size: 12px; color: gray; margin-top: 10px;">
+        *Coba inspect element button diatas. Perhatikan id="btn-user-toggle" nempel di button, bukan di div wrapper.
+      </p>
+    </div>
+
+    <!-- 16. V-MODEL MODIFIERS -->
+    <div style="margin-top: 50px; border-top: 2px dashed black; padding-top: 20px;">
+
+      <form @submit.prevent="alert('Terkirim!')" style="display: flex; flex-direction: column; gap: 10px;">
+        
+        <!-- TRIM: Otomatis hapus spasi di awal/akhir -->
+        <div>
+          <label>Nama: </label>
+          <input v-model.trim="pendaftaran.nama" placeholder="Coba ketik spasi di awal..." />
+          <p style="font-size: 16px; color: blue;">Hasil: "{{ pendaftaran.nama }}"</p>
+        </div>
+
+        <!-- NUMBER: Otomatis ubah string jadi number -->
+        <div>
+          <label>Umur: </label>
+          <input v-model.number="pendaftaran.umur" type="number" placeholder="Umur anda..." />
+          <p style="font-size: 16px; color: blue;">Tipe Data: {{ typeof pendaftaran.umur }}</p>
+        </div>
+
+        <!-- LAZY: Update data HANYA setelah kursor keluar (change event), bukan saat ngetik (input event) -->
+        <div>
+          <label>Deskripsi Diri: </label>
+          <textarea v-model.lazy="pendaftaran.deskripsi" placeholder="Ketik lalu klik diluar..." style="width: 100%;"></textarea>
+          <p style="font-size: 12px; color: blue;">Preview (Update saat blur): {{ pendaftaran.deskripsi }}</p>
+        </div>
+
+        <!--  VALUE BINDING (Radio) -->
+        <div>
+          <label>Pilih Paket:</label>
+          <div style="display: flex; gap: 10px;">
+            <label>
+              <input type="radio" v-model="pendaftaran.paket" value="basic" /> Basic
+            </label>
+            <label>
+              <input type="radio" v-model="pendaftaran.paket" value="premium" /> Premium
+            </label>
+            <!-- Value Binding Dinamis -->
+            <label>
+              <input type="radio" v-model="pendaftaran.paket" :value="'gold_member'" /> Gold (Dynamic Value)
+            </label>
+          </div>
+          <p style="font-size: 12px; color: blue;">Paket terpilih: {{ pendaftaran.paket }}</p>
+        </div>
+
+      </form>
+    </div>
+
+    <!-- 17. slot -->
+    <div style="margin-top: 50px; border-top: 2px dashed black; padding-top: 20px;">
+
+      <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+        
+        <!--  Default (Tidak ngirim apa-apa, pakai Fallback Content) -->
+        <CardLayout />
+
+        <!--  Mengisi Slot Utama (Default Slot) -->
+        <CardLayout>
+          <p>Ini adalah konten yang dikirim dari <strong>App.vue</strong> lewat Slot Utama!</p>
+          <button>Klik Saya</button>
+        </CardLayout>
+
+        <!--  Mengisi Named Slots (Header, Footer) -->
+        <CardLayout>
+          <template #header>
+            <h3 style="color: blue; margin: 0;">Judul Custom</h3>
+          </template>
+
+          <ul>
+            <li>Item 1</li>
+            <li>Item 2</li>
+          </ul>
+
+          <template #footer>
+            <div style="display: flex; gap: 10px; ">
+              <button style="background: red; color: white;">Hapus</button>
+              <button style="background: blue; color: white;">Simpan</button>
+            </div>
+          </template>
+        </CardLayout>
+
+      </div>
+    </div>
+
+    <!-- 18. PROVIDE & INJECT -->
+    <div style="margin-top: 50px; border-top: 2px dashed black; padding-top: 20px; padding-bottom: 50px;">
+      
+      <p>Theme : <strong>{{ themeApp }}</strong></p>
+      <button @click="ubahTheme">Ganti</button>
+
+      <div style="margin-top: 20px;">
+        <p>Kotak dibawah ini adalah komponen <strong>GrandChild</strong>.</p>
+        <p>Dia menerima data Theme & User langsung dari App.vue tanpa lewat Props!</p>
+        
+        <GrandChild />
+      </div>
+    </div>
+    
 </template>
 
 

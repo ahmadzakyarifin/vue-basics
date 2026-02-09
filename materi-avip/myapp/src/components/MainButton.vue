@@ -1,4 +1,13 @@
 <script setup>
+    // 01. inheritAttrs: false
+    // MATIKAN WARISAN OTOMATIS
+    // Default: Attributes (class, style, id, event listeners) otomatis nempel ke ROOT element (disini div wrapper).
+    // Masalah: Kita seringkali mau attributes itu nempel ke BUTTON di dalam, bukan div pembungkusnya.
+    // Solusi: Set inheritAttrs: false, lalu pasang manual pakai v-bind="$attrs".
+    defineOptions({
+      inheritAttrs: false
+    })
+
     const namanya = 'idan'
     const showname = () => console.log(namanya)
 
@@ -35,9 +44,12 @@
         total : Number,
         user : Object,
         menus : Array,
-        onClick : Function
+        onClick : Function,
+        active : {
+            type : Boolean,
+            default : undefined 
+        }
     })
-
 
 </script>
 
@@ -62,7 +74,22 @@
         </ul>
         
         <!--14 class dan style binding -->
-        <button v-if="props.title" :class="{'button': props.title == 'test', 'disabled' : disabled}"  :disabled="props.disabled" @click="props.onClick">{{ props.title }}</button>
+        <!-- v-bind="$attrs" : Ini 'JEMBATAN' warisannya. 
+             Semua atribut non-prop (id, class, @click dari parent) akan ditempel ke SINI, bukan ke div wrapper. -->
+        <button 
+            v-if="props.title" 
+            v-bind="$attrs"
+            :class="{
+                'button': props.title == 'test', 
+                'disabled' : props.disabled, 
+                'btn-active': props.active === true, 
+                'btn-inactive': props.active === false 
+            }"   
+            :disabled="props.disabled" 
+            @click="props.onClick"
+        >
+            {{ props.title }}
+        </button>
     </div>
 </template>
 
@@ -82,7 +109,17 @@
     background-color: gray;
     cursor: not-allowed;
 }
+.btn-active {
+  background-color: green;
+  color: white;
+  border: none;
+}
 
+.btn-inactive {
+  background-color: gray;
+  color: black;
+  border: none;
+}
 
     
 </style>
@@ -98,8 +135,40 @@ Lebih panjang
 Semua ditulis di satu tempat
 Tidak pakai return
 Lebih singkat & rapi
-Disarankan untuk Vue 3 -->
+Disarankan untuk Vue <!-- 
 
+    1. APA ITU PROPS?
+       - Props adalah cara kita mengirim DATA LOGIKA dari Parent (App.vue) ke Child (MainButton.vue).
+       - Kapan pakai Props? Ketika kita butuh data itu di dalam <script> untuk diolah (seperti if-else, computed, atau method).
+       - Contoh: `active` (boolean). Kita butuh nilai true/false nya untuk menentukan class mana yang dipakai (btn-active atau btn-inactive).
+       - Default: False (biasanya boolean defaultnya false agar aman).
+
+    2. APA ITU ATTRIBUTES (ATTRS)?
+       - Attributes adalah hal-hal HTML standard seperti `class`, `style`, `id`, `type`, `placeholder` dan event listener (`@click`, `@mouseover`).
+       - Sifatnya "Bodoh" (Tampilan/Event saja), tidak butuh logic berat di dalam script child.
+
+    3. APA ITU FALLTHROUGH ATTRIBUTES?
+       - Ketika kita kirim attribute dari Parent: <MainButton class="merah" />
+       - Tapi di Child kita TIDAK mendefinisikannya sebagai props.
+       - Maka Vue otomatis menempelkannya ke ROOT ELEMENT di child.
+    
+    4. MASALAH ROOT ELEMENT & INHERIT PARCEL (inheritAttrs)
+       - Masalah: Kalau di child kita punya pembungkus (Wrapper):
+         <div class="wrapper">
+             <button>Klik Saya</button>
+         </div>
+       - Kalau kita kirim class="merah" dari parent, defaultnya dia nempel di DIV WRAPPER.
+         Hasil: <div class="wrapper merah"> ... </div>
+         Padahal kita mau tombolnya yang merah!
+    
+    5. SOLUSI: inheritAttrs: false
+       - Matikan warisan otomatis di script: defineOptions({ inheritAttrs: false })
+       - Tentukan manual target warisannya di template pakai: v-bind="$attrs"
+       - Hasil: 
+         <div class="wrapper">
+            <button class="merah">Klik Saya</button>   <-- Sukses nempel disini!
+         </div>
+-->
 
 <!-- Props
 Data dari parent ke child
