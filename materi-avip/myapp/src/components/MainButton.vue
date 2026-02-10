@@ -68,7 +68,7 @@
         <p v-if="props.user && props.user.role">Role : {{ props.user.role }}</p>
         
         <ul v-if="props.menus">
-            <li v-for="menu in props.menus" key="menu.id">
+            <li v-for="menu in props.menus" v-bind:key="menu.id">
                 {{ menu.nama }} - Rp{{ menu.price }}
             </li>
         </ul>
