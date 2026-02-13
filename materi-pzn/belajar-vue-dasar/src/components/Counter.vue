@@ -1,6 +1,8 @@
 <script setup>
 import { nextTick, ref } from 'vue';
 
+const props = defineProps(["name","initialCount"])
+
 let count = 0;
 
 function increment() {
@@ -40,7 +42,17 @@ async function increment4() {
   //  karena ini jalan milisecond
 }
 
+let count5 = ref({
+  count :  Number(props.initialCount),
+  name : ""
+})
 
+async function increment5() {
+  count5.value = {
+    count : count5.value.count + 1,
+    name : count5.value.name
+  }
+}
 
 </script>
 
@@ -61,6 +73,10 @@ async function increment4() {
     <div>
       <h1>Counter :{{ count4 }}</h1>
       <button v-on:click="increment4">Increment</button>
+    </div>
+    <div>
+      <h1>{{ props.name }} : {{ count5.count }}</h1>
+      <button v-on:click="increment5">Increment</button>
     </div>
   </div>
 </template>

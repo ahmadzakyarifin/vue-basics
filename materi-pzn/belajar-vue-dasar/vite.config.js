@@ -12,7 +12,9 @@ export default defineConfig({
         say_hello : "say_hello.html",
         style : "style.html",
         todo_list : "todo_list.html",
-        contact : "contact.html"
+        contact : "contact.html",
+        product : "product.html",
+        note : "note.html"
       }
     }
   }
