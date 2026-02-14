@@ -5,6 +5,14 @@ import CounterStateless from './CounterStateless.vue';
 
 const counter = ref(0)
 
+// function increment() {
+//   counter.value++
+// }
+
+function increment(value){
+  counter.value += value
+}
+
 </script>
 
 <template>
@@ -14,8 +22,12 @@ const counter = ref(0)
     <Counter name="zaky" initial-count="10" />
   </div>
   <div>
-    <CounterStateless name="zaky" :count="counter" />
-    <button @click="counter++">tambah</button>
+    <!-- Code Sebelumnya -->
+    <!-- <CounterStateless name="zaky" :count="counter" />
+    <button @click="counter++">tambah</button> -->
+
+    <!-- Code Baru dengan defineEmits -->
+     <CounterStateless name="zaky" :count="counter" @click="increment" :increment="2" />
   </div>
   </div>
 </template>

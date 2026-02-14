@@ -1,10 +1,10 @@
 <script setup>
-import Style from './components/Style.vue'
+import Contact from './components/Contact.vue'
 </script>
 
 <template>
   <div>
-    <Style />
+    <Contact />
   </div>
  
 </template>

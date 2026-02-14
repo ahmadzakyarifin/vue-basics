@@ -3,10 +3,16 @@ import { nextTick, ref } from 'vue';
 
 const props = defineProps(["name","initialCount"])
 
+const emit = defineEmits(["click"])
+
 let count = 0;
 
 function increment() {
   count++;
+  
+  // Mengirim event ke parent
+  emit("click", count)
+  
   document.getElementById("count").innerText = `Counter : ${count}`;
 }
 
